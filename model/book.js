@@ -1,26 +1,57 @@
 import mongoose from "mongoose";
 
-const bookSchema = new mongoose.Schema({
-  title: { type: String, required: true },
-  author: { type: String, required: true },
-  isbn: { type: String, required: true, unique: true },
-  copies: { type: Number, default: "1" },
-  availabilityStatus: {
-    type: String,
-    enum: ["available", "issued"],
-    default: "available",
-  },
+const bookSchema = new mongoose.Schema(
+  {
+    title: {
+      type: String,
+      required: [true, "Book title is required"],
+      trim: true,
+      maxlength: [200, "Title cannot exceed 200 characters"],
+      index: true
+    },
 
-  category: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Category",
-    
-    default:"null"
-  },
+    author: {
+      type: String,
+      required: [true, "Author name is required"],
+      trim: true,
+      maxlength: [150, "Author name cannot exceed 150 characters"],
+      index: true
+    },
 
- 
-  isDeleted:{type:Boolean,default:false}
+    isbn: {
+      type: String,
+      required: [true, "ISBN is required"],
+      unique: true,
+      trim: true,
+      match: [/^(?:\d{10}|\d{13})$/, "ISBN must be a valid 10 or 13 digit number"],
+      index: true
+    },
 
+    copies: {
+      type: Number,
+      default: 1,
+      min: [0, "Copies cannot be negative"]
+    },
+
+    category: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Category",
+      default: null
+    },
+
+    isDeleted: {
+      type: Boolean,
+      default: false,
+      index: true
+    }
+  }
+);
+
+bookSchema.virtual("availabilityStatus").get(function () {
+  return this.copies > 0 ? "available" : "issued";
 });
+
+
+bookSchema.index({ title: 1, author: 1 });
 
 export default mongoose.model("Book", bookSchema);

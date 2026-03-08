@@ -47,7 +47,6 @@ MVC/
 │   └── transcaction.js
 │   └── user.js
 │   
-
 ├── routes/
 │   ├── bookRoute.js
 │   ├── categoryRoute.js
