@@ -1,11 +1,12 @@
 <%- include('partials/header', { title: 'Library Dashboard' }) %>
-<%- include('partials/navbar') %>
+<%- include('partials/navbar', { user: user }) %>
 
 <!-- Hero Section -->
 <header class="hero-section text-center py-5 bg-light mb-4">
     <div class="container">
         <h1 class="display-4 fw-bold">Library Dashboard</h1>
         <p class="lead text-muted">Manage books, categories, and users in one place.</p>
+        <p>Welcome, <%= user.name %></p>
     </div>
 </header>
 
@@ -20,9 +21,7 @@
                     <div class="display-5 fw-bold mb-2"><%= bookCount %></div>
                     <h5 class="text-uppercase text-muted small fw-bold">Total Books</h5>
                     <p class="text-secondary">Books available in the library.</p>
-                    <a href="/books" class="btn btn-outline-primary w-100 mt-3 rounded-pill">
-                        Manage Books
-                    </a>
+                    <a href="/books" class="btn btn-outline-primary w-100 mt-3 rounded-pill">Manage Books</a>
                 </div>
             </div>
         </div>
@@ -34,9 +33,7 @@
                     <div class="display-5 fw-bold mb-2"><%= categoryCount %></div>
                     <h5 class="text-uppercase text-muted small fw-bold">Categories</h5>
                     <p class="text-secondary">Genres and classifications.</p>
-                    <a href="/category" class="btn btn-outline-primary w-100 mt-3 rounded-pill">
-                        View Categories
-                    </a>
+                    <a href="/category" class="btn btn-outline-primary w-100 mt-3 rounded-pill">View Categories</a>
                 </div>
             </div>
         </div>
@@ -48,9 +45,7 @@
                     <div class="display-5 fw-bold mb-2"><%= userCount %></div>
                     <h5 class="text-uppercase text-muted small fw-bold">Members</h5>
                     <p class="text-secondary">Registered library users.</p>
-                    <a href="/users" class="btn btn-outline-primary w-100 mt-3 rounded-pill">
-                        User List
-                    </a>
+                    <a href="/users" class="btn btn-outline-primary w-100 mt-3 rounded-pill">User List</a>
                 </div>
             </div>
         </div>

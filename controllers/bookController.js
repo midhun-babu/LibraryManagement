@@ -1,4 +1,4 @@
-import Book from "../model/book.js";
+import Book from "../models/book.js";
 
 
 // Show all books

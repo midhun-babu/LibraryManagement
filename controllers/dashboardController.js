@@ -1,21 +1,24 @@
-import Book from "../model/book.js";
-import Category from "../model/category.js";
-import User from "../model/user.js";
+import Book from "../models/book.js";
+import Category from "../models/category.js";
+import User from "../models/user.js";
 
-export const getDashboard = async (req, res) => {
+export const dashboardController = async (req, res) => {
   try {
-    const books = await Book.find();
-    const categories = await Category.find();
-    const users = await User.find();
+    // Get counts
+    const bookCount = await Book.countDocuments({ isDeleted: false });
+    const categoryCount = await Category.countDocuments({ isDeleted: false });
+    const userCount = await User.countDocuments({ isDeleted: false });
 
-    res.render("dashboard", {
-      title: "Dashboard",
-      books,
-      categories,
-      users
+    // Render dashboard with variables
+    res.render("index", {
+      user: req.user,          // from authMiddleware
+      bookCount,
+      categoryCount,
+      userCount
     });
+
   } catch (err) {
     console.error(err);
-    res.status(500).send("Server Error");
+    res.status(500).send("Internal Server Error");
   }
 };

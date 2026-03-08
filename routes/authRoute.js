@@ -1,45 +1,22 @@
 import express from "express";
 import { login, register } from "../controllers/authController.js";
-import { protect } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-
-// ==============================
-// Render Auth Pages
-// ==============================
-
-// Login page
+// Render Login Page
 router.get("/login", (req, res) => {
-  res.render("auth/login");
+  res.render("auth/login", { title: "Login" });
 });
 
-// Register page
+// Render Register Page
 router.get("/register", (req, res) => {
-  res.render("auth/register");
+  res.render("auth/register", { title: "Register" });
 });
 
-
-// ==============================
-// Form Actions
-// ==============================
-
-// Handle login form
+// Handle Login Form POST
 router.post("/login", login);
 
-// Handle register form
+// Handle Register Form POST
 router.post("/register", register);
-
-
-// ==============================
-// Protected Profile Page
-// ==============================
-
-router.get("/profile", protect, (req, res) => {
-  res.render("user/profile", {
-    user: req.user
-  });
-});
-
 
 export default router;
