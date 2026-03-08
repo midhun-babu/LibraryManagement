@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartLib | Dashboard</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f4f7f6; }
+        .hero-section { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+            color: white; 
+            padding: 80px 0; 
+            margin-bottom: -50px;
+        }
+        .card { 
+            border: none; 
+            border-radius: 15px; 
+            transition: transform 0.3s ease; 
+        }
+        .card:hover { transform: translateY(-10px); }
+        .stat-number { font-size: 2.5rem; font-weight: 700; color: #764ba2; }
+        .navbar { background: #fff !important; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .navbar-brand, .nav-link { color: #333 !important; font-weight: 600; }
+    </style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg sticky-top">
+  <div class="container">
+    <a class="navbar-brand" href="/">📚 SmartLib</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" href="/books">Books</a></li>
+        <li class="nav-item"><a class="nav-link" href="/categories">Categories</a></li>
+        <li class="nav-item"><a class="btn btn-primary ms-lg-3 px-4 rounded-pill" href="/login">Login</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero Section -->
+<header class="hero-section text-center">
+    <div class="container">
+        <h1 class="display-3 fw-bold">Library Dashboard</h1>
+        <p class="lead opacity-75">Manage your inventory, users, and categories in real-time.</p>
+    </div>
+</header>
+
+<!-- Statistics / Dashboard Cards -->
+<main class="container mb-5">
+    <div class="row g-4 justify-content-center">
+        
+        <!-- Books Card -->
+        <div class="col-md-4">
+            <div class="card shadow-lg p-4">
+                <div class="card-body text-center">
+                    <div class="stat-number mb-2"><%= bookCount %></div>
+                    <h5 class="card-title text-uppercase text-muted small fw-bold">Total Books</h5>
+                    <p class="text-secondary">Books currently in the system.</p>
+                    <a href="/books" class="btn btn-outline-primary w-100 mt-3 rounded-pill">Manage Books</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Categories Card -->
+        <div class="col-md-4">
+            <div class="card shadow-lg p-4">
+                <div class="card-body text-center">
+                    <div class="stat-number mb-2"><%= categoryCount %></div>
+                    <h5 class="card-title text-uppercase text-muted small fw-bold">Categories</h5>
+                    <p class="text-secondary">Genres and classifications.</p>
+                    <a href="/categories" class="btn btn-outline-primary w-100 mt-3 rounded-pill">View Genres</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Members Card -->
+        <div class="col-md-4">
+            <div class="card shadow-lg p-4">
+                <div class="card-body text-center">
+                    <div class="stat-number mb-2"><%= userCount %></div>
+                    <h5 class="card-title text-uppercase text-muted small fw-bold">Members</h5>
+                    <p class="text-secondary">Registered library users.</p>
+                    <a href="/users" class="btn btn-outline-primary w-100 mt-3 rounded-pill">User List</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</main>
+
+<!-- Footer -->
+<footer class="py-5 bg-white border-top mt-5">
+    <div class="container text-center text-muted">
+        <p class="mb-0">&copy; 2024 SmartLib MVC System. All rights reserved.</p>
+    </div>
+</footer>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net"></script>
+</body>
+</html>
