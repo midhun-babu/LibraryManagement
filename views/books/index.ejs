@@ -1,0 +1,29 @@
+<%- include('../partials/header', { title: 'Books' }) %>
+<%- include('../partials/navbar') %>
+
+<div class="container mt-5">
+    <h2 class="mb-4">Books</h2>
+
+    <a href="/books/create" class="btn btn-primary mb-3">Add New Book</a>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Category</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% books.forEach(book => { %>
+                <tr>
+                    <td><%= book.title %></td>
+                    <td><%= book.author %></td>
+                    <td><%= book.category?.name %></td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+</div>
+
+<%- include('../partials/footer') %>

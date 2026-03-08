@@ -1,13 +1,45 @@
-const express = require('express');
+import express from "express";
+import { login, register } from "../controllers/authController.js";
+import { protect } from "../middleware/authMiddleware.js";
+
 const router = express.Router();
-const authController = require('../controllers/authController');
-const auth = require('../middleware/auth');
-
-router.post('/login', authController.login);
 
 
-router.get('/profile', auth, (req, res) => {
-    res.json({ message: 'Welcome to your profile', userId: req.user.id });
+// ==============================
+// Render Auth Pages
+// ==============================
+
+// Login page
+router.get("/login", (req, res) => {
+  res.render("auth/login");
 });
 
-module.exports = router;
+// Register page
+router.get("/register", (req, res) => {
+  res.render("auth/register");
+});
+
+
+// ==============================
+// Form Actions
+// ==============================
+
+// Handle login form
+router.post("/login", login);
+
+// Handle register form
+router.post("/register", register);
+
+
+// ==============================
+// Protected Profile Page
+// ==============================
+
+router.get("/profile", protect, (req, res) => {
+  res.render("user/profile", {
+    user: req.user
+  });
+});
+
+
+export default router;

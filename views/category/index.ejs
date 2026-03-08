@@ -1,0 +1,18 @@
+    <%- include('../partials/header', { title: 'Categories' }) %>
+<%- include('../partials/navbar') %>
+
+<div class="container mt-5">
+    <h2 class="mb-4">Categories</h2>
+
+    <a href="/category/create" class="btn btn-primary mb-3">Add Category</a>
+
+    <ul class="list-group">
+        <% categories.forEach(cat => { %>
+            <li class="list-group-item">
+                <%= cat.name %>
+            </li>
+        <% }) %>
+    </ul>
+</div>
+
+<%- include('../partials/footer') %>
