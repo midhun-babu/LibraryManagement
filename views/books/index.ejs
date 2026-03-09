@@ -38,6 +38,7 @@
                 <th>Title</th>
                 <th>Author</th>
                 <th>Category</th>
+                <th>Status</th>
                 <% if (locals.user && (user.role === 'admin' || user.role === 'librarian')) { %>
                     <th>Actions</th>
                 <% } %>
@@ -50,13 +51,37 @@
                         <td><%= book.title %></td>
                         <td><%= book.author %></td>
                         <td><%= book.category?.name || 'Uncategorized' %></td>
+                        <td>
+                            <span class="badge <%= book.availabilityStatus === 'available' ? 'bg-success' : 'bg-warning' %>">
+                                <%= book.availabilityStatus %>
+                            </span>
+                            (<%= book.availableCopies %>/<%= book.totalCopies %>)
+                        </td>
                         <% if (locals.user && (user.role === 'admin' || user.role === 'librarian')) { %>
                             <td>
                                 <a href="/books/<%= book._id %>/form" class="btn btn-sm btn-warning">Edit</a>
-                                <form action="/books/<%= book._id %>/delete" method="POST" class="d-inline" onsubmit="return confirm('Are you sure?')">
+                                <% if (book.availableCopies > 0) { %>
+                                    <form action="/books/<%= book._id %>/issue-self" method="POST" class="d-inline">
+                                        <button type="submit" class="btn btn-sm btn-success">Issue to Myself</button>
+                                    </form>
+                                    <button class="btn btn-sm btn-primary" onclick="issueBook('<%= book._id %>')">Issue to User</button>
+                                <% } %>
+                                <form action="/books/<%= book._id %>/delete" method="POST" class="d-inline" onsubmit="return confirm('Delete this book?')">
                                     <button type="submit" class="btn btn-sm btn-danger">Delete</button>
                                 </form>
                             </td>
+                        <% } else if (locals.user && user.role === 'user') { %>
+                            <td>
+                                <% if (book.availableCopies > 0) { %>
+                                    <form action="/bookRequests/<%= book._id %>/request" method="POST" class="d-inline">
+                                        <button type="submit" class="btn btn-sm btn-success">Request</button>
+                                    </form>
+                                <% } else { %>
+                                    <span class="text-muted">Unavailable</span>
+                                <% } %>
+                            </td>
+                        <% } else { %>
+                            <td></td>
                         <% } %>
                     </tr>
                 <% }) %>
@@ -65,6 +90,72 @@
             <% } %>
         </tbody>
     </table>
+
+    <!-- pagination -->
+    <% if (pagination && pagination.totalPages > 1) { %>
+    <nav aria-label="Books pagination" class="mt-3">
+      <ul class="pagination justify-content-center">
+        <% const qsBase = (p) => {
+             let qs = `page=${p}&limit=${pagination.limit}`;
+             if (search) qs += `&search=${encodeURIComponent(search)}`;
+             if (selectedCat) qs += `&category=${selectedCat}`;
+             return qs;
+           };
+        %>
+        <% if (pagination.page > 1) { %>
+          <li class="page-item">
+            <a class="page-link" href="?<%= qsBase(pagination.page - 1) %>">Previous</a>
+          </li>
+        <% } %>
+        <% for (let i = 1; i <= pagination.totalPages; i++) { %>
+          <li class="page-item <%= pagination.page === i ? 'active' : '' %>">
+            <a class="page-link" href="?<%= qsBase(i) %>"><%= i %></a>
+          </li>
+        <% } %>
+        <% if (pagination.page < pagination.totalPages) { %>
+          <li class="page-item">
+            <a class="page-link" href="?<%= qsBase(pagination.page + 1) %>">Next</a>
+          </li>
+        <% } %>
+      </ul>
+    </nav>
+    <% } %>
 </div>
+
+<!-- Issue Book Modal -->
+<div class="modal fade" id="issueModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Issue Book</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <form id="issueForm" method="POST">
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Select User</label>
+            <select name="userId" class="form-select" required>
+              <option value="">-- Select User --</option>
+              <!-- Users will be loaded here -->
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Issue Book</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+function issueBook(bookId) {
+  document.getElementById('issueForm').action = `/books/${bookId}/issue`;
+  // Load users via AJAX or pre-load
+  // For now, assume users are available
+  new bootstrap.Modal(document.getElementById('issueModal')).show();
+}
+</script>
 
 <%- include('../partials/footer') %>

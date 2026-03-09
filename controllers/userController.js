@@ -7,6 +7,20 @@ import {
   restoreUserService,
 } from "../services/userService.js";
 
+// Get Create User Form
+export const getCreateUserForm = async (req, res) => {
+  try {
+    try {
+      res.render("users/form", { title: "Add User", user: null });
+    } catch (renderErr) {
+      console.error("Render error:", renderErr);
+      res.status(500).send("Error rendering form");
+    }
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
+};
+
 // Create User
 export const createUser = async (req, res) => {
   try {
@@ -25,7 +39,12 @@ export const createUser = async (req, res) => {
 export const getUsers = async (req, res) => {
   try {
     const users = await getAllUsers();
-    res.render("users/index", { title: "Users", users });
+    try {
+      res.render("users/index", { title: "Users", users });
+    } catch (renderErr) {
+      console.error("Render error:", renderErr);
+      res.status(500).send("Error rendering users");
+    }
   } catch (err) {
     res.status(500).send(err.message);
   }
@@ -38,7 +57,30 @@ export const getUserById = async (req, res) => {
     if (!user || user.isDeleted) {
       return res.status(404).send("User not found");
     }
-    res.render("users/show", { title: "User Details", user });
+    try {
+      res.render("users/show", { title: "User Details", user });
+    } catch (renderErr) {
+      console.error("Render error:", renderErr);
+      res.status(500).send("Error rendering user details");
+    }
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
+};
+
+// Get Edit User Form
+export const getEditUserForm = async (req, res) => {
+  try {
+    const user = await getUserByIdService(req.params.id);
+    if (!user || user.isDeleted) {
+      return res.status(404).send("User not found");
+    }
+    try {
+      res.render("users/form", { title: "Edit User", user });
+    } catch (renderErr) {
+      console.error("Render error:", renderErr);
+      res.status(500).send("Error rendering edit form");
+    }
   } catch (err) {
     res.status(500).send(err.message);
   }

@@ -1,0 +1,36 @@
+<%- include('../partials/header', { title: 'My Book Requests' }) %>
+<%- include('../partials/navbar') %>
+
+<div class="container mt-5">
+  <h2>My Book Requests</h2>
+
+  <table class="table table-hover shadow-sm">
+    <thead class="table-dark">
+      <tr>
+        <th>Book Title</th>
+        <th>Author</th>
+        <th>Requested Date</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% requests.forEach(request => { %>
+        <tr>
+          <td><%= request.bookId.title %></td>
+          <td><%= request.bookId.author %></td>
+          <td><%= new Date(request.requestedDate).toLocaleDateString() %></td>
+          <td>
+            <span class="badge <%= request.status === 'pending' ? 'bg-warning' : (request.status === 'approved' ? 'bg-info' : (request.status === 'issued' ? 'bg-success' : 'bg-danger')) %>">
+              <%= request.status %>
+            </span>
+          </td>
+        </tr>
+      <% }) %>
+      <% if (requests.length === 0) { %>
+        <tr><td colspan="4" class="text-center">No book requests found.</td></tr>
+      <% } %>
+    </tbody>
+  </table>
+</div>
+
+<%- include('../partials/footer') %>

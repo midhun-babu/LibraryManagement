@@ -1,0 +1,39 @@
+<%- include('../partials/header', { title: 'Transaction Details' }) %>
+<%- include('../partials/navbar') %>
+
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card shadow-sm">
+        <div class="card-header bg-dark text-white">
+          <h4 class="mb-0">Transaction Information</h4>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6">
+              <p><strong>Book:</strong> <%= transaction.bookId.title %> by <%= transaction.bookId.author %></p>
+              <p><strong>Issued To:</strong> <%= transaction.issuedTo.name %> (<%= transaction.issuedTo.uname %>)</p>
+              <p><strong>Issued By:</strong> <%= transaction.issuedBy.name %></p>
+            </div>
+            <div class="col-md-6">
+              <p><strong>Issued Date:</strong> <%= new Date(transaction.issuedDate).toLocaleDateString() %></p>
+              <p><strong>Due Date:</strong> <%= new Date(transaction.dueDate).toLocaleDateString() %></p>
+              <p><strong>Return Date:</strong> <%= transaction.returnDate ? new Date(transaction.returnDate).toLocaleDateString() : 'Not returned' %></p>
+              <p><strong>Fine:</strong> ₹<%= transaction.fine %></p>
+              <p><strong>Status:</strong>
+                <span class="badge <%= transaction.status === 'returned' ? 'bg-success' : (transaction.status === 'overdue' ? 'bg-danger' : 'bg-warning') %>">
+                  <%= transaction.status %>
+                </span>
+              </p>
+            </div>
+          </div>
+          <div class="mt-4">
+            <a href="/transactions" class="btn btn-secondary">Back to Transactions</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

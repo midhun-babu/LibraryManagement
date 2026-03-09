@@ -52,8 +52,8 @@
               <!-- Copies -->
               <div class="col-md-4 mb-3">
                 <label class="form-label fw-bold">Number of Copies</label>
-                <input type="number" name="copies" class="form-control" min="0"
-                       value="<%= locals.book ? book.copies : 1 %>" required>
+                <input type="number" name="totalCopies" class="form-control" min="0"
+                       value="<%= locals.book ? book.totalCopies : 1 %>" required>
               </div>
             </div>
 
@@ -73,8 +73,8 @@
       <!-- Status Badge (Only shown during Edit) -->
       <% if (locals.book) { %>
         <div class="mt-3 text-center">
-          <span class="badge <%= book.copies > 0 ? 'bg-success' : 'bg-danger' %> p-2">
-            Current Status: <%= book.copies > 0 ? 'Available' : 'Issued' %>
+          <span class="badge <%= book.totalCopies > 0 ? 'bg-success' : 'bg-danger' %> p-2">
+            Current Status: <%= book.totalCopies > 0 ? 'Available' : 'Issued' %>
           </span>
         </div>
       <% } %>

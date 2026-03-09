@@ -22,7 +22,7 @@
         <tbody>
             <% users.forEach(targetUser => { %>
                 <tr>
-                    <td><%= targetUser.name %></td>
+                    <td><a href="/users/<%= targetUser._id %>"><%= targetUser.name %></a></td>
                     <td><%= targetUser.email %></td>
                     <td>
                         <span class="badge <%= targetUser.role === 'admin' ? 'bg-danger' : (targetUser.role === 'librarian' ? 'bg-info' : 'bg-secondary') %>">
@@ -48,7 +48,7 @@
                         %>
 
                         <% if (canEdit) { %>
-                            <a href="/users/<%= targetUser._id %>" class="btn btn-sm btn-warning">Edit</a>
+                            <a href="/users/<%= targetUser._id %>/edit" class="btn btn-sm btn-warning">Edit</a>
                             
                             <% if (loggedInUser.role === 'admin' && loggedInUser._id.toString() !== targetUser._id.toString()) { %>
                                 <form action="/users/<%= targetUser._id %>/delete" method="POST" class="d-inline" onsubmit="return confirm('Delete user?')">
