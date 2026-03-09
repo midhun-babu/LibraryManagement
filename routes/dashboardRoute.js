@@ -1,8 +1,9 @@
+
 import express from "express";
+import { dashboardController } from "../controllers/dashboardController.js";
+
 const router = express.Router();
 
-router.get("/", (req, res) => {
-  res.render("dashboard", { title: "Dashboard" });
-});
+router.get("/", dashboardController);
 
 export default router;

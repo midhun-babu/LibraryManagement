@@ -1,0 +1,86 @@
+<%- include('../partials/header', { title: (locals.book ? 'Edit Book' : 'Add New Book') }) %>
+<%- include('../partials/navbar') %>
+
+<div class="container mt-5 mb-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card shadow-sm border-0">
+        <div class="card-header bg-dark text-white py-3">
+          <h4 class="mb-0"><%= locals.book ? 'Edit Existing Book' : 'Register New Book' %></h4>
+        </div>
+        <div class="card-body p-4">
+          
+          <form action="<%= locals.book ? '/books/' + book._id + '/update' : '/books' %>" method="POST">
+            
+            <div class="row">
+              <!-- Title -->
+              <div class="col-md-12 mb-3">
+                <label class="form-label fw-bold">Book Title</label>
+                <input type="text" name="title" class="form-control" maxlength="200"
+                       value="<%= locals.book ? book.title : '' %>" placeholder="e.g. The Great Gatsby" required>
+              </div>
+
+              <!-- Author -->
+              <div class="col-md-6 mb-3">
+                <label class="form-label fw-bold">Author Name</label>
+                <input type="text" name="author" class="form-control" maxlength="150"
+                       value="<%= locals.book ? book.author : '' %>" placeholder="e.g. F. Scott Fitzgerald" required>
+              </div>
+
+              <!-- ISBN (Validated by Schema regex) -->
+              <div class="col-md-6 mb-3">
+                <label class="form-label fw-bold">ISBN (10 or 13 digits)</label>
+                <input type="text" name="isbn" class="form-control" 
+                       value="<%= locals.book ? book.isbn : '' %>" placeholder="e.g. 9780142437339" required>
+                <small class="text-muted">Must be a valid 10 or 13 digit number.</small>
+              </div>
+
+              <!-- Category Dropdown -->
+              <div class="col-md-8 mb-3">
+                <label class="form-label fw-bold">Category</label>
+                <select name="category" class="form-select" required>
+                  <option value="">-- Select Category --</option>
+                  <% categories.forEach(cat => { %>
+                    <option value="<%= cat._id %>" 
+                      <%= (locals.book && book.category && (book.category._id || book.category).toString() === cat._id.toString()) ? 'selected' : '' %>>
+                      <%= cat.name %>
+                    </option>
+                  <% }) %>
+                </select>
+              </div>
+
+              <!-- Copies -->
+              <div class="col-md-4 mb-3">
+                <label class="form-label fw-bold">Number of Copies</label>
+                <input type="number" name="copies" class="form-control" min="0"
+                       value="<%= locals.book ? book.copies : 1 %>" required>
+              </div>
+            </div>
+
+            <hr class="my-4">
+
+            <div class="d-flex justify-content-between">
+              <a href="/books" class="btn btn-light border px-4">Back to List</a>
+              <button type="submit" class="btn btn-dark px-5">
+                <%= locals.book ? 'Update Book Record' : 'Save Book' %>
+              </button>
+            </div>
+
+          </form>
+        </div>
+      </div>
+      
+      <!-- Status Badge (Only shown during Edit) -->
+      <% if (locals.book) { %>
+        <div class="mt-3 text-center">
+          <span class="badge <%= book.copies > 0 ? 'bg-success' : 'bg-danger' %> p-2">
+            Current Status: <%= book.copies > 0 ? 'Available' : 'Issued' %>
+          </span>
+        </div>
+      <% } %>
+
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/navbar') %>

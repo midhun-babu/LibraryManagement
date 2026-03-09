@@ -1,13 +1,15 @@
-const express = require('express');
+// routes/authRoute.js
+import express from "express";
+import { login, register,logout } from "../controllers/authController.js";
+
 const router = express.Router();
-const authController = require('../controllers/authController');
-const auth = require('../middleware/auth');
 
-router.post('/login', authController.login);
+router.get("/login", (req, res) => res.render("auth/login", { title: "Login" }));
+router.post("/login", login);
+router.get("/logout", logout);
+
+router.get("/register", (req, res) => res.render("auth/register", { title: "Register" }));
+router.post("/register", register);
 
 
-router.get('/profile', auth, (req, res) => {
-    res.json({ message: 'Welcome to your profile', userId: req.user.id });
-});
-
-module.exports = router;
+export default router;

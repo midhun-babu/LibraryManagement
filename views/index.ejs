@@ -1,59 +1,61 @@
-
-
-<%- include('partials/header', { title: 'My Page' }) %>
-<%- include('partials/navbar') %>
+<%- include('partials/header', { title: 'Library Dashboard' }) %>
+<%- include('partials/navbar', { user: user }) %>
 
 <!-- Hero Section -->
-<header class="hero-section text-center">
+<header class="hero-section text-center py-5 bg-light mb-4">
     <div class="container">
-        <h1 class="display-3 fw-bold">Library Dashboard</h1>
-        <p class="lead opacity-75">Manage your inventory, users, and categories in real-time.</p>
+        <h1 class="display-4 fw-bold">Library Dashboard</h1>
+        <p class="lead text-muted">Manage books, categories, and users in one place.</p>
+        
+        <p>Welcome, <%= (locals.user && user.name) ? user.name : 'Guest' %></p>
     </div>
 </header>
 
-<!-- Statistics / Dashboard Cards -->
+<!-- Dashboard Cards -->
 <main class="container mb-5">
     <div class="row g-4 justify-content-center">
+
         
-        <!-- Books Card -->
         <div class="col-md-4">
-            <div class="card shadow-lg p-4">
+            <div class="card shadow p-4">
                 <div class="card-body text-center">
-                    <div class="stat-number mb-2"><%= bookCount %></div>
-                    <h5 class="card-title text-uppercase text-muted small fw-bold">Total Books</h5>
-                    <p class="text-secondary">Books currently in the system.</p>
-                    <a href="/books.ejs" class="btn btn-outline-primary w-100 mt-3 rounded-pill">Manage Books</a>
+                    <div class="display-5 fw-bold mb-2"><%= bookCount %></div>
+                    <h5 class="text-uppercase text-muted small fw-bold">Total Books</h5>
+                    <p class="text-secondary">Books available in the library.</p>
+                    <a href="/books" class="btn btn-outline-primary w-100 mt-3 rounded-pill">
+                        <%= (locals.user && (user.role === 'admin' || user.role === 'librarian')) ? 'Manage Books' : 'View Books' %>
+                    </a>
                 </div>
             </div>
         </div>
 
-        <!-- Categories Card -->
+        
         <div class="col-md-4">
-            <div class="card shadow-lg p-4">
+            <div class="card shadow p-4">
                 <div class="card-body text-center">
-                    <div class="stat-number mb-2"><%= categoryCount %></div>
-                    <h5 class="card-title text-uppercase text-muted small fw-bold">Categories</h5>
+                    <div class="display-5 fw-bold mb-2"><%= categoryCount %></div>
+                    <h5 class="text-uppercase text-muted small fw-bold">Categories</h5>
                     <p class="text-secondary">Genres and classifications.</p>
-                    <a href="/categories" class="btn btn-outline-primary w-100 mt-3 rounded-pill">View Genres</a>
+                    <a href="/category" class="btn btn-outline-primary w-100 mt-3 rounded-pill">View Categories</a>
                 </div>
             </div>
         </div>
 
-        <!-- Members Card -->
+        
+        <% if (locals.user && (user.role === 'admin' || user.role === 'librarian')) { %>
         <div class="col-md-4">
-            <div class="card shadow-lg p-4">
+            <div class="card shadow p-4">
                 <div class="card-body text-center">
-                    <div class="stat-number mb-2"><%= userCount %></div>
-                    <h5 class="card-title text-uppercase text-muted small fw-bold">Members</h5>
+                    <div class="display-5 fw-bold mb-2"><%= userCount %></div>
+                    <h5 class="text-uppercase text-muted small fw-bold">Members</h5>
                     <p class="text-secondary">Registered library users.</p>
                     <a href="/users" class="btn btn-outline-primary w-100 mt-3 rounded-pill">User List</a>
                 </div>
             </div>
         </div>
+        <% } %>
 
     </div>
 </main>
+
 <%- include('partials/footer') %>
-
-
-
