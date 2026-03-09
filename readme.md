@@ -26,20 +26,26 @@ project/
 
 MVC/
 ├── config/
-├── controller/
-│   └── authcontroller.js
-│   └── bookcontroller.js
-│   └── pagecontroller.js
-│   └── pathcontroller.js
-│   └── usercontroller.js
+├── controllers/
+│   └── authController.js
+│   └── bookController.js
+│   └── dashboardController.js
+│   └── pageController.js
+│   └── pathController.js
+│   └── userController.js
 │ app.js
 │ .env
 │ package.json
 │
+│error.ejs
+│index.ejs
+│
 ├── db/
 │   └── connection.js
 ├── middleware/
-│   └── auth.js
+│   └── authMiddleware.js
+│   └── errorMiddleware.js
+│   └── roleMiddleware.js
 │
 ├── model/
 │   └── book.js
@@ -51,12 +57,32 @@ MVC/
 │   ├── bookRoute.js
 │   ├── categoryRoute.js
 │   ├── userRoute.js
+│   ├── dashboardRoute.js
 │   └── indexRoute.js
 │   └── authRoute.js
 │
+├── services/
+│   └── authService.js
+│   └── bookService.js
+│   └── dashboardService.js
+│   └── pageService.js
+│   └── pathService.js
+│   └── userService.js
 ├── views/
 │   ├── layouts/
 │   │   └── main.ejs
+│   ├── books/
+│   │   └──  index.ejs
+│   ├── auth/
+│   │   ├── login.ejs
+│   │   └── register.ejs
+│   ├── category/
+│   │   └──  index.ejs
+│   ├── users/
+│   │   ├── dashboard.ejs
+│   │   ├── index.ejs
+│   │   ├── profile.ejs
+│   │   └── settings.ejs
 │   ├── partials/
 │   │   ├── header.ejs
 │   │   └── footer.ejs

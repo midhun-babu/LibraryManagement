@@ -1,22 +1,15 @@
+// routes/authRoute.js
 import express from "express";
-import { login, register } from "../controllers/authController.js";
+import { login, register,logout } from "../controllers/authController.js";
 
 const router = express.Router();
 
-// Render Login Page
-router.get("/login", (req, res) => {
-  res.render("auth/login", { title: "Login" });
-});
-
-// Render Register Page
-router.get("/register", (req, res) => {
-  res.render("auth/register", { title: "Register" });
-});
-
-// Handle Login Form POST
+router.get("/login", (req, res) => res.render("auth/login", { title: "Login" }));
 router.post("/login", login);
+router.get("/logout", logout);
 
-// Handle Register Form POST
+router.get("/register", (req, res) => res.render("auth/register", { title: "Register" }));
 router.post("/register", register);
+
 
 export default router;

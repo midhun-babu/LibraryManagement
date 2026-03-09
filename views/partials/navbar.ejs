@@ -1,31 +1,36 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container">
+    <a class="navbar-brand" href="/">Library System</a>
+    
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
 
-  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-    <div class="container-fluid">
-      <a class="navbar-brand fw-bold" href="/">Dokjas Library</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
-              data-bs-target="#navbarNav" aria-controls="navbarNav" 
-              aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto align-items-center">
+        <li class="nav-item">
+          <a class="nav-link <%= (locals.title === 'Home') ? 'active' : '' %>" href="/">Home</a>
+        </li>
+        
+        <!-- Only show if a real user object exists -->
+        <% if (locals.user && user._id) { %>
           <li class="nav-item">
-            <a class="nav-link active" href="/">Home</a>
+            <span class="nav-link text-white me-2">Hi, <strong><%= user.name %></strong></span>
           </li>
+          <!-- navbar.ejs -->
           <li class="nav-item">
-            <a class="nav-link" href="/books">Books</a>
-          </li>
+            <a class="btn btn-danger btn-sm" href="/auth/logout">LogOut</a>
+          </li>    
+        <% } else { %>
+          <!-- GUESTS ONLY: Login and Sign Up -->
           <li class="nav-item">
-            <a class="nav-link" href="/category">Categories</a>
+            <a class="nav-link <%= (locals.title === 'Login') ? 'active' : '' %>" href="/auth/login">Login</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/users">Users</a>
+          <li class="nav-item ms-lg-2">
+            <a class="btn btn-primary btn-sm" href="/auth/register">Sign Up</a>
           </li>
-        </ul>
-      </div>
+        <% } %>
+      </ul>
     </div>
-  </nav>
-
-  
-
+  </div>
+</nav>

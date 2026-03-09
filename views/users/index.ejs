@@ -1,0 +1,68 @@
+<%- include('../partials/header', { title: 'Users' }) %>
+<%- include('../partials/navbar') %>
+
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>User Management</h2>
+        <% if (locals.user && user.role === 'admin') { %>
+            <a href="/users/create" class="btn btn-success">Add New Staff</a>
+        <% } %>
+    </div>
+
+    <table class="table table-hover shadow-sm">
+        <thead class="table-dark">
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <% users.forEach(targetUser => { %>
+                <tr>
+                    <td><%= targetUser.name %></td>
+                    <td><%= targetUser.email %></td>
+                    <td>
+                        <span class="badge <%= targetUser.role === 'admin' ? 'bg-danger' : (targetUser.role === 'librarian' ? 'bg-info' : 'bg-secondary') %>">
+                            <%= targetUser.role %>
+                        </span>
+                    </td>
+                    <td>
+                        <% 
+                          // Hierarchical Logic:
+                          let canEdit = false;
+                          const loggedInUser = locals.user;
+                          
+                          if (loggedInUser) {
+                              // 1. Everyone can edit themselves
+                              if (loggedInUser._id.toString() === targetUser._id.toString()) canEdit = true;
+                              
+                              // 2. Admin can edit Librarian and User
+                              if (loggedInUser.role === 'admin' && (targetUser.role === 'librarian' || targetUser.role === 'user')) canEdit = true;
+                              
+                              // 3. Librarian can only edit User
+                              if (loggedInUser.role === 'librarian' && targetUser.role === 'user') canEdit = true;
+                          }
+                        %>
+
+                        <% if (canEdit) { %>
+                            <a href="/users/<%= targetUser._id %>" class="btn btn-sm btn-warning">Edit</a>
+                            
+                            <% if (loggedInUser.role === 'admin' && loggedInUser._id.toString() !== targetUser._id.toString()) { %>
+                                <form action="/users/<%= targetUser._id %>/delete" method="POST" class="d-inline" onsubmit="return confirm('Delete user?')">
+                                    <button class="btn btn-sm btn-danger">Delete</button>
+                                </form>
+                            <% } %>
+                        <% } else { %>
+                            <span class="text-muted small">No Access</span>
+                        <% } %>
+                    </td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+</div>
+
+<%- include('../partials/footer') %>

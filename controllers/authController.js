@@ -1,54 +1,62 @@
-import User from "../models/user.js";
-import jwt from "jsonwebtoken";
-import bcrypt from "bcryptjs";
+import {
+  findUserByIdentifier,
+  validatePassword,
+  createUser,
+  createToken,
+} from "../services/authService.js";
 
-// Generate JWT Token
-const generateToken = (id) => jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "1h" });
-
-// ===================================
-// Login Controller
-// ===================================
+// controllers/authController.js
 export const login = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { identifier, password } = req.body;
+    const user = await findUserByIdentifier(identifier).select("+password");
 
-    if (!email || !password) {
-      return res.render("auth/login", { title: "Login", error: "Email and password are required" });
-    }
-
-    const user = await User.findOne({ email });
     if (!user) {
-      return res.render("auth/login", { title: "Login", error: "Invalid email or password" });
+      return res.render("auth/login", {
+        title: "Login",
+        error: "User not found",
+      });
     }
 
-    const isMatch = await bcrypt.compare(password, user.password);
+    const isMatch = await validatePassword(password, user.password);
     if (!isMatch) {
-      return res.render("auth/login", { title: "Login", error: "Invalid email or password" });
+      return res.render("auth/login", {
+        title: "Login",
+        error: "Invalid password",
+      });
     }
 
-    // Create token and set cookie
-    const token = generateToken(user._id);
+    const token = createToken(user._id);
     res.cookie("token", token, { httpOnly: true });
-
-    res.redirect("/"); // redirect to dashboard
+    res.redirect("/");
   } catch (error) {
-    res.render("auth/login", { title: "Login", error: "Server error" });
+    res.status(500).send("Login error: " + error.message);
   }
 };
+export const logout = (req, res) => {
+  res.clearCookie("token");
+  req.user = null;
+  res.locals.user = null;
+  res.redirect("/auth/login");
+};
 
-// ===================================
-// Register Controller
-// ===================================
-export const register = async (req, res) => {
+export const register = async (req, res, next) => {
+  console.log("Received Body:", req.body);
   try {
-    const { name, email, password } = req.body;
+    const { name, uname, email, password, role } = req.body;
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    await createUser({ name, uname, email, password, role });
 
-    await User.create({ name, email, password: hashedPassword });
-
-    res.redirect("/auth/login"); // after registration, go to login
+    res.redirect("/auth/login");
   } catch (error) {
-    res.render("auth/register", { title: "Register", error: "Registration failed" });
+    console.log("FULL ERROR OBJECT:", error);
+    console.error("Registration Error:", error.message);
+    res.render("auth/register", {
+      title: "Register",
+      error:
+        error.code === 11000
+          ? "Username or Email already exists"
+          : "Registration failed",
+    });
   }
 };

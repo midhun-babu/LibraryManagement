@@ -2,23 +2,57 @@
 <%- include('../partials/navbar') %>
 
 <div class="container mt-5">
-  <h2>Register</h2>
-  <form action="/auth/register" method="POST">
-    <div class="mb-3">
-      <label>Name</label>
-      <input type="text" name="name" class="form-control" required />
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h2 class="card-title mb-4">Register</h2>
+          <form action="/auth/register" method="POST">
+            
+            <!-- Full Name -->
+            <div class="mb-3">
+              <label class="form-label">Full Name</label>
+              <input type="text" name="name" class="form-control" placeholder="your name" required />
+            </div>
+
+            <!-- Unique Username (Required by your schema) -->
+            <div class="mb-3">
+              <label class="form-label">Username</label>
+              <input type="text" name="uname" class="form-control" placeholder="unique u_name" required />
+            </div>
+
+            <!-- Email -->
+            <div class="mb-3">
+              <label class="form-label">Email Address</label>
+              <input type="email" name="email" class="form-control" placeholder="name@example.com" required />
+            </div>
+
+            <!-- Role (Matches your enum) -->
+            <div class="mb-3">
+              <label class="form-label">Role</label>
+              <select name="role" class="form-select">
+                <option value="user" selected>User</option>
+                <option value="librarian">Librarian</option>
+                <option value="admin">Admin</option>
+              </select>
+            </div>
+
+            <!-- Password -->
+            <div class="mb-3">
+              <label class="form-label">Password</label>
+              <input type="password" name="password" class="form-control" required />
+            </div>
+
+            <div class="d-grid gap-2">
+              <button type="submit" class="btn btn-primary">Create Account</button>
+              <a href="/auth/login" class="btn btn-link text-center">Already have an account? Login</a>
+            </div>
+            
+          </form>
+        </div>
+      </div>
     </div>
-    <div class="mb-3">
-      <label>Email</label>
-      <input type="email" name="email" class="form-control" required />
-    </div>
-    <div class="mb-3">
-      <label>Password</label>
-      <input type="password" name="password" class="form-control" required />
-    </div>
-    <button type="submit" class="btn btn-primary">Register</button>
-    <a href="/auth/login" class="btn btn-link">Login</a>
-  </form>
+  </div>
 </div>
 
 <%- include('../partials/footer') %>

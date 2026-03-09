@@ -1,28 +1,10 @@
+
 import express from "express";
-import Book from "../models/book.js";
-import Category from "../models/category.js";
-import User from "../models/user.js";
+import { dashboardController } from "../controllers/dashboardController.js";
 
 const router = express.Router();
 
-router.get("/", async (req, res) => {
-  try {
 
-    const bookCount = await Book.countDocuments();
-    const categoryCount = await Category.countDocuments();
-    const userCount = await User.countDocuments();
-
-    res.render("index", {
-      title: "Dashboard",
-      bookCount,
-      categoryCount,
-      userCount
-    });
-
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Server Error");
-  }
-});
+router.get("/", dashboardController);
 
 export default router;

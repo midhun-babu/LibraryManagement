@@ -6,7 +6,8 @@
     <div class="container">
         <h1 class="display-4 fw-bold">Library Dashboard</h1>
         <p class="lead text-muted">Manage books, categories, and users in one place.</p>
-        <p>Welcome, <%= user.name %></p>
+        
+        <p>Welcome, <%= (locals.user && user.name) ? user.name : 'Guest' %></p>
     </div>
 </header>
 
@@ -14,19 +15,21 @@
 <main class="container mb-5">
     <div class="row g-4 justify-content-center">
 
-        <!-- Books -->
+        
         <div class="col-md-4">
             <div class="card shadow p-4">
                 <div class="card-body text-center">
                     <div class="display-5 fw-bold mb-2"><%= bookCount %></div>
                     <h5 class="text-uppercase text-muted small fw-bold">Total Books</h5>
                     <p class="text-secondary">Books available in the library.</p>
-                    <a href="/books" class="btn btn-outline-primary w-100 mt-3 rounded-pill">Manage Books</a>
+                    <a href="/books" class="btn btn-outline-primary w-100 mt-3 rounded-pill">
+                        <%= (locals.user && (user.role === 'admin' || user.role === 'librarian')) ? 'Manage Books' : 'View Books' %>
+                    </a>
                 </div>
             </div>
         </div>
 
-        <!-- Categories -->
+        
         <div class="col-md-4">
             <div class="card shadow p-4">
                 <div class="card-body text-center">
@@ -38,7 +41,8 @@
             </div>
         </div>
 
-        <!-- Users -->
+        
+        <% if (locals.user && (user.role === 'admin' || user.role === 'librarian')) { %>
         <div class="col-md-4">
             <div class="card shadow p-4">
                 <div class="card-body text-center">
@@ -49,6 +53,7 @@
                 </div>
             </div>
         </div>
+        <% } %>
 
     </div>
 </main>

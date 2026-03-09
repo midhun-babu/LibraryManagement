@@ -1,96 +1,77 @@
-import Book from "../models/book.js";
+import {
+  createBookService,
+  getBookByIdService,
+  updateBookService,
+  softDeleteBookService,
+  getBooksService
+} from "../services/bookService.js";
+import { getCategoryService } from "../services/categoryService.js";
 
-
-// Show all books
+//Books through search
 export const getBooks = async (req, res) => {
   try {
+    const filters = {
+      search: req.query.search,
+      category: req.query.category
+    };
 
-    const books = await Book
-      .find({ isDeleted: false })
-      .populate("category");
+    const books = await getBooksService(filters);
+    const categories = await getCategoryService();
 
-    res.render("books/index", {
-      title: "Books",
-      books
+    res.render("books/index", { 
+      title: "Books", 
+      books, 
+      categories,
+      search: filters.search,
+      selectedCat: filters.category
     });
-
   } catch (err) {
     res.status(500).send(err.message);
   }
 };
 
-
-
-// Create book
+//Add Book
 export const createBook = async (req, res) => {
   try {
-
     const { title, author } = req.body;
-
     if (!title || !author) {
       return res.status(400).send("Title and Author required");
     }
-
-    await Book.create(req.body);
-
+    await createBookService(req.body);
     res.redirect("/books");
-
   } catch (err) {
     res.status(400).send(err.message);
   }
 };
 
-
-
-// Show single book
+//searchBookById
 export const getBookById = async (req, res) => {
   try {
-
-    const book = await Book
-      .findById(req.params.id)
-      .populate("category");
-
+    const book = await getBookByIdService(req.params.id);
     if (!book || book.isDeleted) {
       return res.status(404).send("Book not found");
     }
-
-    res.render("books/show", {
-      title: "Book Details",
-      book
-    });
-
+    res.render("books/show", { title: "Book Details", book });
   } catch (err) {
     res.status(500).send(err.message);
   }
 };
 
-
-
-// Update book
+//update book
 export const updateBook = async (req, res) => {
   try {
-
-    await Book.findByIdAndUpdate(req.params.id, req.body);
-
+    await updateBookService(req.params.id, req.body);
     res.redirect("/books");
-
   } catch (err) {
     res.status(400).send(err.message);
   }
 };
 
-
-
-// Soft delete
+//delete book
 export const deleteBook = async (req, res) => {
   try {
-
-    await Book.findByIdAndUpdate(req.params.id, {
-      isDeleted: true
-    });
-
+    await softDeleteBookService(req.params.id);
     res.redirect("/books");
-
   } catch (err) {
     res.status(400).send(err.message);
   }
