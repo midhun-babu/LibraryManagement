@@ -10,12 +10,14 @@ import logger from './config/logger.js';
 import { setUser } from "./middleware/authMiddleware.js";
 
 // Import Routes
-import indexRoutes from "./routes/indexRoute.js";
+import indexRoute from "./routes/indexRoute.js";
 import dashboardRoute from "./routes/dashboardRoute.js";
-import categoryRoutes from "./routes/categoryRoute.js";
-import bookRoutes from "./routes/bookRoute.js";
-import userRoutes from "./routes/userRoute.js";
-import authRoutes from "./routes/authRoute.js";
+import categoryRoute from "./routes/categoryRoute.js";
+import bookRoute from "./routes/bookRoute.js";
+import userRoute from "./routes/userRoute.js";
+import authRoute from "./routes/authRoute.js";
+import transactionRoute from "./routes/transactionRoute.js";
+import bookRequestRoute from "./routes/bookRequestRoute.js";
 import morgan from "morgan";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -48,12 +50,14 @@ app.use((req, res, next) => {
 });
 
 // ROUTES
-app.use("/auth", authRoutes); 
+app.use("/auth", authRoute); 
 app.use("/dashboard", dashboardRoute);
-app.use("/category", categoryRoutes);
-app.use("/books", bookRoutes);
-app.use("/users", userRoutes);
-app.use("/", indexRoutes);
+app.use("/category", categoryRoute);
+app.use("/books", bookRoute);
+app.use("/users", userRoute);
+app.use("/transactions", transactionRoute);
+app.use("/bookRequests", bookRequestRoute);
+app.use("/", indexRoute);
 
 // ERROR HANDLERS
 app.use((req, res) => {

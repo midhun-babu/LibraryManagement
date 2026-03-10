@@ -27,10 +27,16 @@ const bookSchema = new mongoose.Schema(
       index: true
     },
 
-    copies: {
+    totalCopies: {
       type: Number,
       default: 1,
       min: [0, "Copies cannot be negative"]
+    },
+
+    issuedCopies: {
+      type: Number,
+      default: 0,
+      min: 0
     },
 
     category: {
@@ -48,9 +54,17 @@ const bookSchema = new mongoose.Schema(
 );
 
 bookSchema.virtual("availabilityStatus").get(function () {
-  return this.copies > 0 ? "available" : "issued";
+  const available = this.totalCopies - this.issuedCopies;
+  return available > 0 ? "available" : "unavailable";
 });
 
+bookSchema.virtual("availableCopies").get(function () {
+  return this.totalCopies - this.issuedCopies;
+});
+
+
+bookSchema.set('toJSON', { virtuals: true });
+bookSchema.set('toObject', { virtuals: true });
 
 bookSchema.index({ title: 1, author: 1 });
 

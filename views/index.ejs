@@ -1,13 +1,14 @@
 <%- include('partials/header', { title: 'Library Dashboard' }) %>
 <%- include('partials/navbar', { user: user }) %>
 
+<% const isAdminOrLibrarian = user && (user.role === 'admin' || user.role === 'librarian'); %>
+
 <!-- Hero Section -->
 <header class="hero-section text-center py-5 bg-light mb-4">
     <div class="container">
         <h1 class="display-4 fw-bold">Library Dashboard</h1>
-        <p class="lead text-muted">Manage books, categories, and users in one place.</p>
-        
-        <p>Welcome, <%= (locals.user && user.name) ? user.name : 'Guest' %></p>
+        <p class="lead text-muted">Manage books, categories, and members in one place.</p>
+        <p>Welcome, <%= (user && user.name) ? user.name : 'Guest' %></p>
     </div>
 </header>
 
@@ -15,41 +16,44 @@
 <main class="container mb-5">
     <div class="row g-4 justify-content-center">
 
-        
-        <div class="col-md-4">
-            <div class="card shadow p-4">
+        <!-- Books Card -->
+        <div class="col-12 col-sm-6 col-md-4">
+            <div class="card shadow p-4 h-100">
                 <div class="card-body text-center">
-                    <div class="display-5 fw-bold mb-2"><%= bookCount %></div>
+                    <i class="bi bi-book display-4 mb-3 text-primary"></i>
+                    <div class="display-5 fw-bold mb-2"><%= bookCount || 0 %></div>
                     <h5 class="text-uppercase text-muted small fw-bold">Total Books</h5>
                     <p class="text-secondary">Books available in the library.</p>
                     <a href="/books" class="btn btn-outline-primary w-100 mt-3 rounded-pill">
-                        <%= (locals.user && (user.role === 'admin' || user.role === 'librarian')) ? 'Manage Books' : 'View Books' %>
+                        <%= isAdminOrLibrarian ? 'Manage Books' : 'View Books' %>
                     </a>
                 </div>
             </div>
         </div>
 
-        
-        <div class="col-md-4">
-            <div class="card shadow p-4">
+        <!-- Categories Card -->
+        <div class="col-12 col-sm-6 col-md-4">
+            <div class="card shadow p-4 h-100">
                 <div class="card-body text-center">
-                    <div class="display-5 fw-bold mb-2"><%= categoryCount %></div>
+                    <i class="bi bi-tags display-4 mb-3 text-success"></i>
+                    <div class="display-5 fw-bold mb-2"><%= categoryCount || 0 %></div>
                     <h5 class="text-uppercase text-muted small fw-bold">Categories</h5>
                     <p class="text-secondary">Genres and classifications.</p>
-                    <a href="/category" class="btn btn-outline-primary w-100 mt-3 rounded-pill">View Categories</a>
+                    <a href="/category" class="btn btn-outline-success w-100 mt-3 rounded-pill">View Categories</a>
                 </div>
             </div>
         </div>
 
-        
-        <% if (locals.user && (user.role === 'admin' || user.role === 'librarian')) { %>
-        <div class="col-md-4">
-            <div class="card shadow p-4">
+        <!-- Members Card (admin/librarian only) -->
+        <% if (isAdminOrLibrarian) { %>
+        <div class="col-12 col-sm-6 col-md-4">
+            <div class="card shadow p-4 h-100">
                 <div class="card-body text-center">
-                    <div class="display-5 fw-bold mb-2"><%= userCount %></div>
+                    <i class="bi bi-people display-4 mb-3 text-warning"></i>
+                    <div class="display-5 fw-bold mb-2"><%= userCount || 0 %></div>
                     <h5 class="text-uppercase text-muted small fw-bold">Members</h5>
                     <p class="text-secondary">Registered library users.</p>
-                    <a href="/users" class="btn btn-outline-primary w-100 mt-3 rounded-pill">User List</a>
+                    <a href="/users" class="btn btn-outline-warning w-100 mt-3 rounded-pill">User List</a>
                 </div>
             </div>
         </div>

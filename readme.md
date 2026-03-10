@@ -1,27 +1,5 @@
-/views
-  ├── /layouts          # Base templates (Head, Body, Footer structures)
-  ├── /shared           # Reusable UI bits (Buttons, Loaders, Alerts)
-  ├── /partials         # Fragments used across multiple pages (Nav, Sidebar)
-  ├── /Home             # Views managed by the HomeController
-  │    ├── index.html
-  │    └── about.html
-  └── /User             # Views managed by the UserController
-       ├── profile.html
-       └── settings.html
 
 
-project/
-│
-├── views/
-│   ├── partials/
-│   │   ├── header.ejs
-│   │   ├── footer.ejs
-│   │   └── navbar.ejs
-│   ├── view.ejs
-│   └── otherpage.ejs
-│
-├── app.js
-└── package.json
 
 
 MVC/

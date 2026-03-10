@@ -15,6 +15,26 @@
         <!-- Only show if a real user object exists -->
         <% if (locals.user && user._id) { %>
           <li class="nav-item">
+            <a class="nav-link <%= (locals.title === 'Books') ? 'active' : '' %>" href="/books">Books</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link <%= (locals.title === 'My Book Requests') ? 'active' : '' %>" href="/bookRequests/my">My Requests</a>
+          </li>
+          <% if (user.role === 'admin' || user.role === 'librarian') { %>
+            <li class="nav-item">
+              <a class="nav-link <%= (locals.title === 'Users') ? 'active' : '' %>" href="/users">Users</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link <%= (locals.title === 'Book Requests Management') ? 'active' : '' %>" href="/bookRequests">Book Requests</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link <%= (locals.title === 'All Transactions') ? 'active' : '' %>" href="/transactions">Transactions</a>
+            </li>
+          <% } %>
+          <li class="nav-item">
+            <a class="nav-link <%= (locals.title === 'My Transactions') ? 'active' : '' %>" href="/transactions/my">My Transactions</a>
+          </li>
+          <li class="nav-item">
             <span class="nav-link text-white me-2">Hi, <strong><%= user.name %></strong></span>
           </li>
           <!-- navbar.ejs -->

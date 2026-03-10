@@ -1,0 +1,50 @@
+<%- include('../partials/header', { title: 'User Details' }) %>
+<%- include('../partials/navbar') %>
+
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card shadow-sm">
+        <div class="card-header bg-dark text-white">
+          <h4 class="mb-0">User Information</h4>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6">
+              <p><strong>Name:</strong> <%= user.name %></p>
+              <p><strong>Username:</strong> <%= user.uname %></p>
+              <p><strong>Email:</strong> <%= user.email %></p>
+            </div>
+            <div class="col-md-6">
+              <p><strong>Role:</strong>
+                <span class="badge <%= user.role === 'admin' ? 'bg-danger' : (user.role === 'librarian' ? 'bg-info' : 'bg-secondary') %>">
+                  <%= user.role %>
+                </span>
+              </p>
+              <p><strong>Created:</strong> <%= user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A' %></p>
+              <p><strong>Last Updated:</strong> <%= user.updatedAt ? new Date(user.updatedAt).toLocaleDateString() : 'N/A' %></p>
+            </div>
+          </div>
+          <div class="mt-4">
+            <a href="/users" class="btn btn-secondary">Back to Users</a>
+            <%
+              let canEdit = false;
+              const loggedInUser = locals.user;
+
+              if (loggedInUser) {
+                if (loggedInUser._id.toString() === user._id.toString()) canEdit = true;
+                if (loggedInUser.role === 'admin' && (user.role === 'librarian' || user.role === 'user')) canEdit = true;
+                if (loggedInUser.role === 'librarian' && user.role === 'user') canEdit = true;
+              }
+            %>
+            <% if (canEdit) { %>
+              <a href="/users/<%= user._id %>/edit" class="btn btn-warning">Edit</a>
+            <% } %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>
