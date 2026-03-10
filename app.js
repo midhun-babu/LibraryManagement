@@ -39,7 +39,7 @@ app.use(morgan("dev"));
 //GLOBAL MIDDLEWARE (ORDER MATTERS)
 app.use(express.json());
 app.use(express.urlencoded({ extended: true })); 
-app.use(cookieParser()); // Must be before setUser
+app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
 //AUTHENTICATION MIDDLEWARE
@@ -50,6 +50,7 @@ app.use((req, res, next) => {
 });
 
 // ROUTES
+app.use("/", indexRoute);
 app.use("/auth", authRoute); 
 app.use("/dashboard", dashboardRoute);
 app.use("/category", categoryRoute);
@@ -57,7 +58,6 @@ app.use("/books", bookRoute);
 app.use("/users", userRoute);
 app.use("/transactions", transactionRoute);
 app.use("/bookRequests", bookRequestRoute);
-app.use("/", indexRoute);
 
 // ERROR HANDLERS
 app.use((req, res) => {

@@ -21,7 +21,6 @@ const bookSchema = new mongoose.Schema(
     isbn: {
       type: String,
       required: [true, "ISBN is required"],
-      unique: true,
       trim: true,
       match: [/^(?:\d{10}|\d{13})$/, "ISBN must be a valid 10 or 13 digit number"],
       index: true

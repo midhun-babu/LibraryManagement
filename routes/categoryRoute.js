@@ -1,9 +1,8 @@
 import express from "express";
 import {
   getCategory,
+  getCreateCategoryForm,
   createCategory,
-  getCategoryById,
-  updateCategory,
   deleteCategory,
 } from "../controllers/categoryController.js";
 
@@ -16,15 +15,9 @@ const router = express.Router();
 router.get("/", getCategory);
 
 // Create category (POST)
+router.get("/form", protect, authorizeRoles("librarian", "admin"), getCreateCategoryForm);
 router.post("/", protect, authorizeRoles("librarian", "admin"), createCategory);
 
-// Update category
-router.post(
-  "/:id/update",
-  protect,
-  authorizeRoles("librarian", "admin"),
-  updateCategory,
-);
 
 // Delete category (soft delete)
 router.post(
@@ -34,7 +27,5 @@ router.post(
   deleteCategory,
 );
 
-// Get category by ID (DETAILS page) — keep LAST
-router.get("/:id", getCategoryById);
 
 export default router;

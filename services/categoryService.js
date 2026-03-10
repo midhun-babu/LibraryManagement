@@ -1,8 +1,8 @@
 import Category from "../models/category.js";
 
 // Create Category
-export const createCategoryService = async (data) => {
-  const category = new Category(data);
+export const createCategoryService = async (categoryData) => {
+  const category = new Category(categoryData);
   return await category.save();
 };
 
@@ -29,12 +29,12 @@ export const getCategoryByIdService = async (id) => {
   return await Category.findOne({ _id: id, isDeleted: false }).lean();
 };
 
-// Update category
+// Update category  
 export const updateCategoryService = async (id, updateData) => {
   return await Category.findOneAndUpdate(
     { _id: id, isDeleted: false },
     updateData,
-    { new: true, runValidators: true }, // ensure schema validation
+    { new: true, runValidators: true }, 
   );
 };
 
