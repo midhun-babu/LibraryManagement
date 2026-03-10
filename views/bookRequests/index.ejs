@@ -18,7 +18,7 @@
     <tbody>
       <% requests.forEach(request => { %>
         <tr>
-          <td><%= request.requestedBy ? request.requestedBy.name : 'Unknown User' %> (<%= request.requestedBy ? request.requestedBy.email : 'N/A' %>)</td>
+          <td><%= request.requestedBy ? request.requestedBy.name : 'Unknown User' %> </td>
           <td><%= request.bookId ? request.bookId.title : 'Unknown Book' %></td>
           <td><%= request.bookId ? request.bookId.author : 'N/A' %></td>
           <td><%= new Date(request.requestedDate).toLocaleDateString() %></td>
@@ -29,14 +29,14 @@
           </td>
           <td>
             <% if (request.status === 'pending') { %>
-              <form action="/bookRequests/approve/<%= request._id %>" method="POST" class="d-inline">
+              <form action="/bookRequests/<%= request._id %>/approve" method="POST" class="d-inline">
                 <button type="submit" class="btn btn-success btn-sm">Approve</button>
               </form>
-              <form action="/bookRequests/reject/<%= request._id %>" method="POST" class="d-inline">
+              <form action="/bookRequests/<%= request._id %>/reject" method="POST" class="d-inline">
                 <button type="submit" class="btn btn-danger btn-sm">Reject</button>
               </form>
             <% } else if (request.status === 'approved') { %>
-              <form action="/bookRequests/issue/<%= request._id %>" method="POST" class="d-inline">
+              <form action="/bookRequests/<%= request._id %>/issue" method="POST" class="d-inline">
                 <button type="submit" class="btn btn-primary btn-sm">Issue Book</button>
               </form>
             <% } %>

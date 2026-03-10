@@ -1,0 +1,27 @@
+import User from '../models/userModel.js';
+import { issueBookService } from '../services/bookService.js';
+
+export const issueBook = async (req, res) => {
+  try {
+    const bookId = req.params.id;
+    const { borrower, issueDate } = req.body;
+    const issuedById = req.user._id; // set by auth middleware
+
+    // Find the user by username or email
+    const user = await User.findOne({ 
+      $or: [{ username: borrower }, { email: borrower }] 
+    });
+
+    if (!user) {
+      return res.status(400).send("Borrower not found in user database");
+    }
+
+    // Pass the user's ObjectId to the service
+    const transaction = await issueBookService(bookId, user._id, issuedById);
+
+    res.redirect('/books');
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error issuing book");
+  }
+};

@@ -3,17 +3,17 @@
 
 <div class="container mt-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Books List</h2>
+        <h2>Books Library</h2>
         <% if (locals.user && (user.role === 'admin' || user.role === 'librarian')) { %>
-            <a href="/books/form" class="btn btn-success">Add New Book</a>
+            <a href="/books/form" class="btn btn-success shadow-sm">Add New Book</a>
         <% } %>
     </div>
 
-    <!-- Search and Filter Section -->
-    <div class="card p-3 mb-4 shadow-sm bg-light">
+    <!-- Filter Form -->
+    <div class="card p-3 mb-4 shadow-sm bg-light border-0">
         <form action="/books" method="GET" class="row g-3">
             <div class="col-md-5">
-                <input type="text" name="search" class="form-control" placeholder="Search by title or author..." value="<%= locals.search || '' %>">
+                <input type="text" name="search" class="form-control" placeholder="Search title or author..." value="<%= locals.search || '' %>">
             </div>
             <div class="col-md-3">
                 <select name="category" class="form-select">
@@ -23,139 +23,166 @@
                     <% }) %>
                 </select>
             </div>
-            <div class="col-md-2">
-                <button type="submit" class="btn btn-primary w-100">Filter</button>
-            </div>
-            <div class="col-md-2">
-                <a href="/books" class="btn btn-outline-secondary w-100">Clear</a>
+            <div class="col-md-4 d-flex gap-2">
+                <button type="submit" class="btn btn-primary flex-grow-1">Filter</button>
+                <a href="/books" class="btn btn-outline-secondary">Clear</a>
             </div>
         </form>
     </div>
 
-    <table class="table table-hover shadow-sm">
-        <thead class="table-dark">
-            <tr>
-                <th>Title</th>
-                <th>Author</th>
-                <th>Category</th>
-                <th>Status</th>
-                <% if (locals.user && (user.role === 'admin' || user.role === 'librarian')) { %>
-                    <th>Actions</th>
-                <% } %>
-            </tr>
-        </thead>
-        <tbody>
-            <% if (books.length > 0) { %>
-                <% books.forEach(book => { %>
-                    <tr>
-                        <td><%= book.title %></td>
-                        <td><%= book.author %></td>
-                        <td><%= book.category?.name || 'Uncategorized' %></td>
-                        <td>
-                            <span class="badge <%= book.availabilityStatus === 'available' ? 'bg-success' : 'bg-warning' %>">
-                                <%= book.availabilityStatus %>
-                            </span>
-                            (<%= book.availableCopies %>/<%= book.totalCopies %>)
-                        </td>
-                        <% if (locals.user && (user.role === 'admin' || user.role === 'librarian')) { %>
+    <!-- Books Table -->
+    <div class="table-responsive shadow-sm rounded">
+        <table class="table table-hover mb-0">
+            <thead class="table-dark">
+                <tr>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Category</th>
+                    <th>Stock Status</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (books && books.length > 0) { %>
+                    <% books.forEach(book => { %>
+                        <tr class="align-middle">
+                            <td class="fw-bold"><%= book.title %></td>
+                            <td><%= book.author %></td>
                             <td>
-                                <a href="/books/<%= book._id %>/form" class="btn btn-sm btn-warning">Edit</a>
-                                <% if (book.availableCopies > 0) { %>
-                                    <form action="/books/<%= book._id %>/issue-self" method="POST" class="d-inline">
-                                        <button type="submit" class="btn btn-sm btn-success">Issue to Myself</button>
-                                    </form>
-                                    <button class="btn btn-sm btn-primary" onclick="issueBook('<%= book._id %>')">Issue to User</button>
-                                <% } %>
-                                <form action="/books/<%= book._id %>/delete" method="POST" class="d-inline" onsubmit="return confirm('Delete this book?')">
-                                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                                </form>
+                                <span class="badge rounded-pill bg-info text-dark">
+                                    <%= book.category?.name || 'General' %>
+                                </span>
                             </td>
-                        <% } else if (locals.user && user.role === 'user') { %>
                             <td>
-                                <% if (book.availableCopies > 0) { %>
-                                    <form action="/bookRequests/<%= book._id %>/request" method="POST" class="d-inline">
-                                        <button type="submit" class="btn btn-sm btn-success">Request</button>
-                                    </form>
-                                <% } else { %>
-                                    <span class="text-muted">Unavailable</span>
-                                <% } %>
+                                <% const statusClass = book.availableCopies > 0 ? 'bg-success' : 'bg-danger'; %>
+                                <span class="badge <%= statusClass %>">
+                                    <%= book.availableCopies > 0 ? 'Available' : 'Out of Stock' %>
+                                </span>
+                                <small class="d-block text-muted mt-1">
+                                    <%= book.availableCopies %> of <%= book.totalCopies %> left
+                                </small>
                             </td>
-                        <% } else { %>
-                            <td></td>
-                        <% } %>
-                    </tr>
-                <% }) %>
-            <% } else { %>
-                <tr><td colspan="4" class="text-center">No books found matching your criteria.</td></tr>
-            <% } %>
-        </tbody>
-    </table>
+                            <td class="text-end">
+                                <div class="btn-group shadow-sm">
+                                    <% if (locals.user && (user.role === 'admin' || user.role === 'librarian')) { %>
+                                        <a href="/books/<%= book._id %>/form" class="btn btn-sm btn-outline-warning">Edit</a>
+                                        
+                                        <% if (book.availableCopies > 0) { %>
+                                            <button type="button" class="btn btn-sm btn-outline-primary" 
+                                                onclick="openIssueModal('<%= book._id %>', '<%= book.title %>')">
+                                                Issue
+                                            </button>
+                                        <% } %>
 
-    <!-- pagination -->
-    <% if (pagination && pagination.totalPages > 1) { %>
-    <nav aria-label="Books pagination" class="mt-3">
+                                        <form action="/books/<%= book._id %>/delete" method="POST" class="d-inline" onsubmit="return confirm('Delete this book?')">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                                        </form>
+                                    <% } else if (locals.user && user.role === 'user') { %>
+                                        <form action="/bookRequests/<%= book._id %>/request" method="POST">
+                                            <button type="submit" class="btn btn-sm btn-success" <%= book.availableCopies <= 0 ? 'disabled' : '' %>>
+                                                <%= book.availableCopies > 0 ? 'Request' : 'Waitlist' %>
+                                            </button>
+                                        </form>
+                                    <% } %>
+                                </div>
+                            </td>
+                        </tr>
+                    <% }) %>
+                <% } else { %>
+                    <tr><td colspan="5" class="text-center py-4 text-muted">No books found matching your criteria.</td></tr>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    <% if (locals.pagination && pagination.totalPages > 1) { %>
+    <nav class="mt-4">
       <ul class="pagination justify-content-center">
-        <% const qsBase = (p) => {
-             let qs = `page=${p}&limit=${pagination.limit}`;
-             if (search) qs += `&search=${encodeURIComponent(search)}`;
-             if (selectedCat) qs += `&category=${selectedCat}`;
-             return qs;
-           };
+        <% 
+            const buildUrl = (p) => {
+                let params = new URLSearchParams({ page: p, limit: pagination.limit });
+                if (locals.search) params.append('search', search);
+                if (locals.selectedCat) params.append('category', selectedCat);
+                return '?' + params.toString();
+            };
         %>
-        <% if (pagination.page > 1) { %>
-          <li class="page-item">
-            <a class="page-link" href="?<%= qsBase(pagination.page - 1) %>">Previous</a>
-          </li>
-        <% } %>
+        <li class="page-item <%= pagination.page <= 1 ? 'disabled' : '' %>">
+            <a class="page-link" href="<%= buildUrl(pagination.page - 1) %>">Previous</a>
+        </li>
         <% for (let i = 1; i <= pagination.totalPages; i++) { %>
           <li class="page-item <%= pagination.page === i ? 'active' : '' %>">
-            <a class="page-link" href="?<%= qsBase(i) %>"><%= i %></a>
+            <a class="page-link" href="<%= buildUrl(i) %>"><%= i %></a>
           </li>
         <% } %>
-        <% if (pagination.page < pagination.totalPages) { %>
-          <li class="page-item">
-            <a class="page-link" href="?<%= qsBase(pagination.page + 1) %>">Next</a>
-          </li>
-        <% } %>
+        <li class="page-item <%= pagination.page >= pagination.totalPages ? 'disabled' : '' %>">
+            <a class="page-link" href="<%= buildUrl(pagination.page + 1) %>">Next</a>
+        </li>
       </ul>
     </nav>
     <% } %>
 </div>
 
 <!-- Issue Book Modal -->
-<div class="modal fade" id="issueModal" tabindex="-1">
+<div class="modal fade" id="issueModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Issue Book</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title">Issue Book Transaction</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
       <form id="issueForm" method="POST">
         <div class="modal-body">
+          
+          <!-- Book Title -->
           <div class="mb-3">
-            <label class="form-label">Select User</label>
-            <select name="userId" class="form-select" required>
-              <option value="">-- Select User --</option>
-              <!-- Users will be loaded here -->
-            </select>
+            <label class="form-label fw-bold">Book Title</label>
+            <input type="text" id="modalBookTitle" class="form-control bg-light" readonly>
           </div>
+
+          <!-- Issue Date -->
+          <div class="mb-3">
+            <label class="form-label fw-bold">Issue Date</label>
+            <input type="date" id="modalIssueDate" name="issueDate" class="form-control">
+          </div>
+
+          <!-- Borrower Username/Email -->
+          <div class="mb-3">
+            <label class="form-label fw-bold">Borrower Username / Email</label>
+            <input type="text" name="borrower" class="form-control" placeholder="Enter username or email..." required>
+          </div>
+
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn btn-primary">Issue Book</button>
+          <button type="submit" class="btn btn-primary" onclick="return confirm('issue this book?')">Confirm Issue</button>
         </div>
       </form>
     </div>
   </div>
 </div>
 
+
 <script>
-function issueBook(bookId) {
-  document.getElementById('issueForm').action = `/books/${bookId}/issue`;
-  // Load users via AJAX or pre-load
-  // For now, assume users are available
-  new bootstrap.Modal(document.getElementById('issueModal')).show();
+function openIssueModal(bookId, bookTitle) {
+    const form = document.getElementById('issueForm');
+    const titleInput = document.getElementById('modalBookTitle');
+    const dateInput = document.getElementById('modalIssueDate');
+
+   
+    form.action = `books/${bookId}/issue`; 
+    titleInput.value = bookTitle;
+    const today = new Date().toISOString().split('T')[0]; 
+    dateInput.value = today;
+
+    
+    const modal = new bootstrap.Modal(document.getElementById('issueModal'));
+    modal.show();
 }
 </script>
 
+
 <%- include('../partials/footer') %>
+
+
+

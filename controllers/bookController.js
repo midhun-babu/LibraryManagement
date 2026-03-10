@@ -8,7 +8,7 @@ import {
   issueBookService,
   returnBookService,
 } from "../services/bookService.js";
-
+import User from '../models/user.js';
 import { getCategoryService } from "../services/categoryService.js";
 
 // Get Books (with search + pagination)
@@ -85,35 +85,6 @@ export const createBook = async (req, res) => {
   }
 };
 
-// Get Book By ID (Details Page)
-export const getBookById = async (req, res) => {
-  try {
-    const { id } = req.params;
-
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).send("Invalid Book ID");
-    }
-
-    const book = await getBookByIdService(id);
-
-    if (!book || book.isDeleted) {
-      return res.status(404).send("Book not found");
-    }
-
-    try {
-      res.render("books/show", {
-        title: "Book Details",
-        book,
-      });
-    } catch (renderErr) {
-      console.error("Render error:", renderErr);
-      res.status(500).send("Error rendering book details");
-    }
-  } catch (err) {
-    console.error(err);
-    res.status(500).send("Error retrieving book");
-  }
-};
 
 // Get Book for Edit Form
 export const getBookForEdit = async (req, res) => {
@@ -192,40 +163,29 @@ export const deleteBook = async (req, res) => {
   }
 };
 
-// Issue Book to Self
-export const issueSelf = async (req, res) => {
-  try {
-    const { id } = req.params;
-
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).send("Invalid Book ID");
-    }
-
-    const transaction = await issueBookService(id, req.user._id, req.user._id);
-
-    res.redirect("/books");
-  } catch (err) {
-    console.error(err);
-    res.status(400).send(err.message);
-  }
-};
-
-// Issue Book
+//isssue book
 export const issueBook = async (req, res) => {
   try {
-    const { id } = req.params;
-    const { userId } = req.body;
+    const bookId = req.params.id;
+    const { borrower, issueDate } = req.body;
+    const issuedById = req.user._id; 
 
-    if (!mongoose.Types.ObjectId.isValid(id) || !mongoose.Types.ObjectId.isValid(userId)) {
-      return res.status(400).send("Invalid IDs");
+    
+    const user = await User.findOne({ 
+      $or: [{ uname: borrower }, { email: borrower }] 
+    });
+
+    if (!user) {
+      return res.status(400).send("Borrower not found in user database");
     }
 
-    const transaction = await issueBookService(id, userId, req.user._id);
+    
+    const transaction = await issueBookService(bookId, user._id, issuedById);
 
-    res.redirect("/books");
+    res.redirect('/books');
   } catch (err) {
     console.error(err);
-    res.status(400).send(err.message);
+    res.status(500).send("Error issuing book");
   }
 };
 
